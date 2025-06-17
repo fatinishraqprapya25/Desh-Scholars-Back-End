@@ -6,6 +6,7 @@ dotenv.config({ path: path.join(process.cwd(), ".env") });
 const config = {
     port: process.env.SERVER_PORT,
     mongoConnectionString: process.env.MONGO_CONNECTION_STRING,
+    jwtSecret: process.env.JWT_SECRET
 }
 
 module.exports = config;
