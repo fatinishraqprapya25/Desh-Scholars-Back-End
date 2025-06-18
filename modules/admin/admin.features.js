@@ -1,5 +1,6 @@
 const Admin = require("./admin.model");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const config = require("../../config");
 const sendResponse = require("../../utils/sendResponse");
 
@@ -32,7 +33,7 @@ adminFeatures.loginAdmin = async (req, res) => {
         };
 
         const token = jwt.sign(tokenPayload, config.jwtSecret, {
-            expiresIn: config.jwtExpiresIn
+            expiresIn: "30d"
         });
 
         sendResponse(res, 200, {
@@ -49,9 +50,49 @@ adminFeatures.loginAdmin = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error.message);
         sendResponse(res, 500, {
             success: false,
             message: "Error occurred during login."
+        });
+    }
+};
+
+adminFeatures.validateAdmin = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return sendResponse(res, 401, {
+                success: false,
+                message: "Unauthorized: No token provided"
+            });
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        const decoded = jwt.verify(token, config.jwtSecret);
+
+        const admin = await Admin.findById(decoded.id).select("-password");
+        if (!admin) {
+            return sendResponse(res, 404, {
+                success: false,
+                message: "Admin not found"
+            });
+        }
+
+        // Respond with admin info
+        sendResponse(res, 200, {
+            success: true,
+            message: "Token is valid",
+            data: admin
+        });
+
+    } catch (error) {
+        console.error("Token validation error:", error.message);
+        return sendResponse(res, 401, {
+            success: false,
+            message: "Invalid or expired token"
         });
     }
 };
