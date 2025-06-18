@@ -62,31 +62,6 @@ teacherFeatures.getAllTeachers = async (req, res) => {
     }
 };
 
-teacherFeatures.getSingleTeacher = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const teacher = await Teacher.findById(id).select("-password");
-
-        if (!teacher || teacher.isDeleted) {
-            return sendResponse(res, 404, {
-                success: false,
-                message: "Teacher not found",
-            });
-        }
-
-        sendResponse(res, 200, {
-            success: true,
-            message: "Teacher retrieved successfully",
-            data: teacher,
-        });
-    } catch (error) {
-        sendResponse(res, 500, {
-            success: false,
-            message: "Error fetching teacher",
-        });
-    }
-};
-
 teacherFeatures.updateTeacher = async (req, res) => {
     try {
         const { id } = req.params;
