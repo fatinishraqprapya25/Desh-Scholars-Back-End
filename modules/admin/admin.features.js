@@ -33,12 +33,12 @@ adminFeatures.createAdmin = async (req, res) => {
             data: {
                 adminId: newAdmin._id
             }
-        })
+        });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
         sendResponse(res, 500, {
             success: false,
-            message: "Error occured creating admin!"
+            message: "Error occurred creating admin!"
         });
     }
 };
@@ -62,7 +62,24 @@ adminFeatures.deleteAdmin = async (req, res) => {
     } catch (error) {
         sendResponse(res, 500, {
             success: false,
-            message: "Error occured deleting admin!"
+            message: "Error occurred deleting admin!"
+        });
+    }
+};
+
+// ✅ New: Read all admins
+adminFeatures.getAllAdmins = async (req, res) => {
+    try {
+        const admins = await Admin.find({}, { password: 0 }); // exclude password
+        sendResponse(res, 200, {
+            success: true,
+            message: "Admins retrieved successfully!",
+            data: admins
+        });
+    } catch (error) {
+        sendResponse(res, 500, {
+            success: false,
+            message: "Error occurred fetching admins!"
         });
     }
 };
