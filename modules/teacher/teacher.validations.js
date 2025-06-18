@@ -10,26 +10,22 @@ const bio = z.string().optional();
 
 // Create Teacher Validation
 const createTeacherSchema = z.object({
-    body: z.object({
-        name,
-        email,
-        password,
-        phone,
-        gender,
-        bio,
-    }),
+    name,
+    email,
+    password,
+    phone,
+    gender,
+    bio,
 });
 
 // Update Teacher Validation (partial)
 const updateTeacherSchema = z.object({
-    body: z.object({
-        name: name.optional(),
-        email: email.optional(),
-        password: password.optional(),
-        phone,
-        gender,
-        bio,
-    }),
+    name: name.optional(),
+    email: email.optional(),
+    password: password.optional(),
+    phone,
+    gender,
+    bio,
 });
 
 // Login (Optional if you're handling auth)
