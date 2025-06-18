@@ -72,8 +72,7 @@ adminFeatures.validateAdmin = async (req, res) => {
         const token = authHeader.split(" ")[1];
 
         const decoded = jwt.verify(token, config.jwtSecret);
-
-        const admin = await Admin.findById(decoded.id).select("-password");
+        const admin = await Admin.findById(decoded._id).select("-password");
         if (!admin) {
             return sendResponse(res, 404, {
                 success: false,
