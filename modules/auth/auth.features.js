@@ -97,7 +97,7 @@ authFeatures.validateToken = async (req, res) => {
         const decoded = jwt.verify(authorization, config.jwtSecret);
 
         sendResponse(res, 200, {
-            success: false,
+            success: true,
             message: "token is valid!",
             data: decoded
         });

@@ -5,5 +5,6 @@ const authRouter = require("express").Router();
 
 authRouter.post("/register", validateRequest(authValidations.registerValidation), authFeatures.register);
 authRouter.post("/login", validateRequest(authValidations.loginValidation), authFeatures.login);
+authRouter.get("/validate-token", authFeatures.validateToken);
 
 module.exports = authRouter;
