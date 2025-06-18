@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const config = require("../../config");
 const sendResponse = require("../../utils/sendResponse");
 
+const adminFeatures = {};
+
 adminFeatures.createAdmin = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -15,7 +17,7 @@ adminFeatures.createAdmin = async (req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, config.bcryptSaltRound);
+        const hashedPassword = await bcrypt.hash(password, parseInt(config.bcryptSaltRound));
 
         const newAdmin = new Admin({
             name,
@@ -33,6 +35,7 @@ adminFeatures.createAdmin = async (req, res) => {
             }
         })
     } catch (error) {
+        console.log(error.message)
         sendResponse(res, 500, {
             success: false,
             message: "Error occured creating admin!"
@@ -64,4 +67,4 @@ adminFeatures.deleteAdmin = async (req, res) => {
     }
 };
 
-export default adminFeatures;
+module.exports = adminFeatures;
