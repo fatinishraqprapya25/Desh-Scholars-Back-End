@@ -30,9 +30,9 @@ const teacherSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
-        isActive: {
+        isDeleted: {
             type: Boolean,
-            default: true,
+            default: false,
         },
     }
 );
