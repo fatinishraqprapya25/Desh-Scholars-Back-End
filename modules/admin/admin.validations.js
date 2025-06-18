@@ -1,4 +1,3 @@
-// validations/adminValidation.js
 import { z } from 'zod';
 
 const adminValidations = {};
