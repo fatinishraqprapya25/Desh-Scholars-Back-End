@@ -1,18 +1,17 @@
 const Course = require("./courses.model");
 const sendResponse = require("../../utils/sendResponse");
 
-const courseService = {};
+const courseFeatures = {};
 
-courseService.createCourse = async (req, res) => {
+courseFeatures.createCourse = async (req, res) => {
     try {
         const {
             courseName,
             courseType,
             courseStatus,
             isPaid,
-            description,
+            courseDescription,
             instructorName,
-            courseImage,
             startTime
         } = req.body;
 
@@ -23,25 +22,32 @@ courseService.createCourse = async (req, res) => {
             });
         }
 
-        const course = new Course({
+        // Handle uploaded file
+        let courseImagePath = null;
+        if (req.file) {
+            courseImagePath = req.file.path;
+        }
+
+        const newCourse = new Course({
             courseName,
             courseType,
             courseStatus,
             isPaid,
-            description,
+            description: courseDescription,
             instructorName,
-            courseImage,
-            startTime: courseType === "live" ? startTime : null
+            startTime: courseType === "live" ? startTime : null,
+            courseImage: courseImagePath,
         });
 
-        await course.save();
+        await newCourse.save();
 
         sendResponse(res, 201, {
             success: true,
             message: "Course created successfully.",
-            data: course
+            data: newCourse
         });
     } catch (err) {
+        console.error(err.message);
         sendResponse(res, 500, {
             success: false,
             message: "Server error while creating course."
@@ -49,7 +55,8 @@ courseService.createCourse = async (req, res) => {
     }
 };
 
-courseService.getAllCourses = async (req, res) => {
+
+courseFeatures.getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find({ isDeleted: false });
         sendResponse(res, 200, {
@@ -65,7 +72,7 @@ courseService.getAllCourses = async (req, res) => {
     }
 };
 
-courseService.getCourseById = async (req, res) => {
+courseFeatures.getCourseById = async (req, res) => {
     try {
         const course = await Course.findOne({ _id: req.params.id, isDeleted: false });
 
@@ -89,7 +96,7 @@ courseService.getCourseById = async (req, res) => {
     }
 };
 
-courseService.updateCourse = async (req, res) => {
+courseFeatures.updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedData = req.body;
@@ -127,7 +134,7 @@ courseService.updateCourse = async (req, res) => {
     }
 };
 
-courseService.deleteCourse = async (req, res) => {
+courseFeatures.deleteCourse = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -156,4 +163,4 @@ courseService.deleteCourse = async (req, res) => {
     }
 };
 
-module.exports = courseService;
+module.exports = courseFeatures;

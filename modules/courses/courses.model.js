@@ -33,7 +33,6 @@ const courseSchema = new mongoose.Schema(
         },
         courseImage: {
             type: String,
-            required: [true, "Course image is required"],
         },
         startTime: {
             type: Date,

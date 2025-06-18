@@ -11,6 +11,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 app.use(globalErrorHandler);
 app.use(notFoundHandler);
