@@ -5,6 +5,57 @@ const sendResponse = require("../../utils/sendResponse");
 
 const adminFeatures = {};
 
+adminFeatures.loginAdmin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const existingAdmin = await Admin.findOne({ email });
+        if (!existingAdmin) {
+            return sendResponse(res, 404, {
+                success: false,
+                message: "Admin not found with this email."
+            });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, existingAdmin.password);
+        if (!isPasswordValid) {
+            return sendResponse(res, 401, {
+                success: false,
+                message: "Invalid credentials."
+            });
+        }
+
+        const tokenPayload = {
+            _id: existingAdmin._id,
+            email: existingAdmin.email,
+            name: existingAdmin.name
+        };
+
+        const token = jwt.sign(tokenPayload, config.jwtSecret, {
+            expiresIn: config.jwtExpiresIn
+        });
+
+        sendResponse(res, 200, {
+            success: true,
+            message: "Login successful.",
+            data: {
+                token,
+                admin: {
+                    _id: existingAdmin._id,
+                    name: existingAdmin.name,
+                    email: existingAdmin.email
+                }
+            }
+        });
+
+    } catch (error) {
+        sendResponse(res, 500, {
+            success: false,
+            message: "Error occurred during login."
+        });
+    }
+};
+
 adminFeatures.createAdmin = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -67,7 +118,6 @@ adminFeatures.deleteAdmin = async (req, res) => {
     }
 };
 
-// ✅ New: Read all admins
 adminFeatures.getAllAdmins = async (req, res) => {
     try {
         const admins = await Admin.find({}, { password: 0 }); // exclude password
