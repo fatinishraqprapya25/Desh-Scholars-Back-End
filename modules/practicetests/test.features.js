@@ -5,19 +5,9 @@ const testFeatures = {};
 
 testFeatures.createTest = async (req, res) => {
     try {
-        const { testName, description } = req.body;
+        const testDetails = req.body;
 
-        if (!testName) {
-            return sendResponse(res, 400, {
-                success: false,
-                message: "testName is required."
-            });
-        }
-
-        const newTest = new Test({
-            testName,
-            description
-        });
+        const newTest = new Test(testDetails);
 
         await newTest.save();
 

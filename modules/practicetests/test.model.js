@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const testSchema = new mongoose.Schema({
-    testName: {
+    title: {
         type: String,
         required: true,
         trim: true
