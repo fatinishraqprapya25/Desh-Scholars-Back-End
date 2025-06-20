@@ -116,8 +116,6 @@ courseFeatures.updateCourse = async (req, res) => {
             { new: true }
         );
 
-        console.log(updated);
-
         if (!updated) {
             return sendResponse(res, 404, {
                 success: false,
