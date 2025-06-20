@@ -9,14 +9,21 @@ const mcqSchema = new mongoose.Schema(
         },
         options: {
             type: [String],
-            validate: [arrayLimit, 'At least two options are required'],
+            required: true,
+            validate: {
+                validator: (arr) => arr.length >= 2,
+                message: 'At least two options are required',
+            },
         },
         correctAnswers: {
-            type: [Number], // array of indexes (e.g., [1, 3])
+            type: [Number], // index of correct options
             required: true,
             validate: {
                 validator: function (arr) {
-                    return arr.every(index => typeof index === 'number' && index >= 0 && index < this.options.length);
+                    return (
+                        Array.isArray(arr) &&
+                        arr.every((index) => typeof index === 'number' && index >= 0 && index < this.options.length)
+                    );
                 },
                 message: 'Each correct answer must be a valid index of the options array.',
             },
@@ -30,15 +37,25 @@ const mcqSchema = new mongoose.Schema(
             enum: ['easy', 'medium', 'hard'],
             default: 'medium',
         },
-        tags: [String], // Optional, like ['JavaScript', 'React']
+        tags: {
+            type: [String],
+            default: [],
+        },
+
+        // New fields
+        type: {
+            type: String,
+            enum: ['mock', 'test'],
+            required: true,
+        },
+        testId: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+        },
     },
     {
         timestamps: true,
     }
 );
-
-function arrayLimit(val) {
-    return val.length >= 2;
-}
 
 export default mongoose.model('MCQ', mcqSchema);
