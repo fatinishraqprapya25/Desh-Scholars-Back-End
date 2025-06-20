@@ -56,7 +56,6 @@ courseFeatures.createCourse = async (req, res) => {
     }
 };
 
-
 courseFeatures.getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find({ isDeleted: false });
@@ -101,19 +100,23 @@ courseFeatures.updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedData = req.body;
-
+        if (req.file) {
+            const filePath = path.join(process.cwd(), req.file.path);
+            updatedData.courseImage = filePath;
+        }
         if (updatedData.courseType === "live" && !updatedData.startTime) {
             return sendResponse(res, 400, {
                 success: false,
                 message: "Start time is required for live courses"
             });
         }
-
         const updated = await Course.findOneAndUpdate(
             { _id: id, isDeleted: false },
             updatedData,
             { new: true }
         );
+
+        console.log(updated);
 
         if (!updated) {
             return sendResponse(res, 404, {
