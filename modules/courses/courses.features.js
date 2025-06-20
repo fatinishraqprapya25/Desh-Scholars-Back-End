@@ -1,5 +1,6 @@
 const Course = require("./courses.model");
 const sendResponse = require("../../utils/sendResponse");
+const path = require("path");
 
 const courseFeatures = {};
 
@@ -25,7 +26,7 @@ courseFeatures.createCourse = async (req, res) => {
         // Handle uploaded file
         let courseImagePath = null;
         if (req.file) {
-            courseImagePath = req.file.path;
+            courseImagePath = path.join(process.cwd(), req.file.path);
         }
 
         const newCourse = new Course({

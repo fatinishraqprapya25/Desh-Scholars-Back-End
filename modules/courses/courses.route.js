@@ -9,6 +9,7 @@ const maxSize = 30;
 courseRouter.post("/", verifyAdmin, uploader("courses", allowedFileTypes, maxSize).single("courseImage"), courseFeatures.createCourse);
 
 courseRouter.get("/", courseFeatures.getAllCourses);
+courseRouter.get("/:id", courseFeatures.getCourseById);
 courseRouter.delete("/:id", courseFeatures.deleteCourse);
 
 module.exports = courseRouter;
