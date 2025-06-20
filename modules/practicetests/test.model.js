@@ -8,11 +8,16 @@ const testSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        trim: true
+        trim: true,
+        required: true
     },
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    duration: {
+        type: String,
+        required: true
     }
 });
 
