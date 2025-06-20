@@ -1,4 +1,4 @@
-const Test = require('./test.model'); 
+const Test = require('./test.model');
 const sendResponse = require('../../utils/sendResponse');
 
 const testFeatures = {};
@@ -130,4 +130,3 @@ testFeatures.deleteTest = async (req, res) => {
 };
 
 module.exports = testFeatures;
-s
