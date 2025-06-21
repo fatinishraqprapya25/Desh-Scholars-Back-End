@@ -1,9 +1,9 @@
 const Broadcast = require('./broadcasts.model');
 const sendResponse = require('../../utils/sendResponse');
 
-const broadcastController = {};
+const broadcastsFeatures = {};
 
-broadcastController.createBroadcast = async (req, res) => {
+broadcastsFeatures.createBroadcast = async (req, res) => {
     try {
         const { title, description } = req.body;
 
@@ -30,7 +30,7 @@ broadcastController.createBroadcast = async (req, res) => {
     }
 };
 
-broadcastController.getAllBroadcasts = async (req, res) => {
+broadcastsFeatures.getAllBroadcasts = async (req, res) => {
     try {
         const broadcasts = await Broadcast.find().sort({ createdAt: -1 });
 
@@ -47,7 +47,7 @@ broadcastController.getAllBroadcasts = async (req, res) => {
     }
 };
 
-broadcastController.getBroadcastById = async (req, res) => {
+broadcastsFeatures.getBroadcastById = async (req, res) => {
     try {
         const { id } = req.params;
         const broadcast = await Broadcast.findById(id);
@@ -72,7 +72,7 @@ broadcastController.getBroadcastById = async (req, res) => {
     }
 };
 
-broadcastController.updateBroadcast = async (req, res) => {
+broadcastsFeatures.updateBroadcast = async (req, res) => {
     try {
         const { id } = req.params;
         const updated = await Broadcast.findByIdAndUpdate(id, req.body, {
@@ -101,7 +101,7 @@ broadcastController.updateBroadcast = async (req, res) => {
     }
 };
 
-broadcastController.deleteBroadcast = async (req, res) => {
+broadcastsFeatures.deleteBroadcast = async (req, res) => {
     try {
         const { id } = req.params;
         const deleted = await Broadcast.findByIdAndDelete(id);
@@ -126,4 +126,4 @@ broadcastController.deleteBroadcast = async (req, res) => {
     }
 };
 
-module.exports = broadcastController;
+module.exports = broadcastsFeatures;
