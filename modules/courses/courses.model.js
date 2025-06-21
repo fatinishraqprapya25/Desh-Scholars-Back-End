@@ -21,6 +21,9 @@ const courseSchema = new mongoose.Schema(
             type: Boolean,
             required: [true, "Please specify if the course is paid"],
         },
+        price: {
+            type: String,
+        },
         description: {
             type: String,
             trim: true,
