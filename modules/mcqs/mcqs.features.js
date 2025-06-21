@@ -1,4 +1,4 @@
-const Mcq = require('./mcq.model'); // Your Mongoose MCQ model
+const Mcq = require('./mcqs.model');
 const sendResponse = require('../../utils/sendResponse');
 
 const mcqFeatures = {};
