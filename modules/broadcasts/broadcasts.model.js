@@ -12,6 +12,12 @@ const broadcastSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        for: {
+            type: String,
+            required: true,
+            enum: ['both', 'students', 'teachers'],
+            default: 'both',
+        },
     },
     {
         timestamps: true,
