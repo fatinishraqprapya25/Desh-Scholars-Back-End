@@ -7,7 +7,6 @@ const resources = {};
 resources.createResource = async (req, res) => {
     try {
         const { type, url, description, title } = req.body;
-        conosle.log("hi");
         // Validate required fields
         if (!type || !description || !title) {
             return res.status(400).json({
