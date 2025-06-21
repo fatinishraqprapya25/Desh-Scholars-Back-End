@@ -1,32 +1,67 @@
-const Resource = require('../models/resource.model');
+const Resource = require('./resources.model');
+const path = require("path");
 
 const resources = {};
 
+// Create Resource
 resources.createResource = async (req, res) => {
     try {
-        const { type, url, coverPhoto, description } = req.body;
-
-        if (!type || !url) {
+        const { type, url, description, title } = req.body;
+        conosle.log("hi");
+        // Validate required fields
+        if (!type || !description || !title) {
             return res.status(400).json({
                 success: false,
-                message: "Type and URL are required",
+                message: "Type, title, and description are required.",
             });
         }
 
+        // Validate based on type
+        if (type === 'link' && !url) {
+            return res.status(400).json({
+                success: false,
+                message: "URL is required for link type resources.",
+            });
+        }
+
+        if (type === 'file' && (!req.files || !req.files.resourceFile)) {
+            return res.status(400).json({
+                success: false,
+                message: "Resource file is required for file type resources.",
+            });
+        }
+
+        // Process resource file or link
+        let resourceUrl = '';
+        if (type === 'link') {
+            resourceUrl = url;
+        } else if (type === 'file') {
+            resourceUrl = req.files.resourceFile[0].path;
+        }
+
+        // Process cover photo if available
+        let coverPhoto = '';
+        if (req.files && req.files.coverPhoto) {
+            coverPhoto = req.files.coverPhoto[0].path;
+        }
+
+        // Create the resource
         const resource = await Resource.create({
             type,
-            url,
+            url: resourceUrl,
             coverPhoto,
+            title,
             description,
         });
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: 'Resource created successfully',
             data: resource,
         });
     } catch (error) {
-        res.status(500).json({
+        console.error('Error creating resource:', error);
+        return res.status(500).json({
             success: false,
             message: 'Server error while creating resource',
             error: error.message,
@@ -34,16 +69,17 @@ resources.createResource = async (req, res) => {
     }
 };
 
+// Get all resources
 resources.getAllResources = async (req, res) => {
     try {
         const resources = await Resource.find().sort({ createdAt: -1 });
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: resources,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Server error while fetching resources',
             error: error.message,
@@ -51,6 +87,7 @@ resources.getAllResources = async (req, res) => {
     }
 };
 
+// Get a single resource by ID
 resources.getResourceById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -63,12 +100,12 @@ resources.getResourceById = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: resource,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Server error while fetching resource',
             error: error.message,
@@ -76,6 +113,7 @@ resources.getResourceById = async (req, res) => {
     }
 };
 
+// Update a resource
 resources.updateResource = async (req, res) => {
     try {
         const { id } = req.params;
@@ -91,13 +129,13 @@ resources.updateResource = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Resource updated successfully',
             data: updatedResource,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Server error while updating resource',
             error: error.message,
@@ -105,6 +143,7 @@ resources.updateResource = async (req, res) => {
     }
 };
 
+// Delete a resource
 resources.deleteResource = async (req, res) => {
     try {
         const { id } = req.params;
@@ -117,12 +156,12 @@ resources.deleteResource = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Resource deleted successfully',
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Server error while deleting resource',
             error: error.message,

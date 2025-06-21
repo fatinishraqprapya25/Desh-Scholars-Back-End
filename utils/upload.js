@@ -1,34 +1,37 @@
 const path = require("path");
 const multer = require("multer");
+const fs = require("fs");
 
 const uploader = (folder, allowedFileTypes, maxSize) => {
-    // define storage
+    const uploadPath = path.join(__dirname, "../uploads", folder);
+
+    // Ensure directory exists
+    if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, `uploads/${folder}`);
+            cb(null, uploadPath);
         },
         filename: (req, file, cb) => {
             cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
         }
     });
 
-    // filtering files
     const fileFilter = (req, file, cb) => {
         if (allowedFileTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error(`${allowedFileTypes.toString()} are allowed!`), false);
+            cb(new Error(`Only ${allowedFileTypes.join(", ")} are allowed!`), false);
         }
-    }
+    };
 
-    // upload function
-    const upload = multer({
+    return multer({
         storage,
         limits: { fileSize: maxSize * 1024 * 1024 },
         fileFilter
     });
-
-    return upload;
-}
+};
 
 module.exports = uploader;
