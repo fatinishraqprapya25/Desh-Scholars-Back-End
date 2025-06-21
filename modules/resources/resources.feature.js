@@ -1,12 +1,13 @@
-const Resource = require('./resources.model');
 const path = require("path");
+const Resource = require("./resources.model");
 
 const resources = {};
 
-// Create Resource
+// CREATE RESOURCE
 resources.createResource = async (req, res) => {
     try {
         const { type, url, description, title } = req.body;
+
         // Validate required fields
         if (!type || !description || !title) {
             return res.status(400).json({
@@ -15,7 +16,7 @@ resources.createResource = async (req, res) => {
             });
         }
 
-        // Validate based on type
+        // Type-specific validation
         if (type === 'link' && !url) {
             return res.status(400).json({
                 success: false,
@@ -30,7 +31,7 @@ resources.createResource = async (req, res) => {
             });
         }
 
-        // Process resource file or link
+        // Determine resource URL
         let resourceUrl = '';
         if (type === 'link') {
             resourceUrl = url;
@@ -38,13 +39,13 @@ resources.createResource = async (req, res) => {
             resourceUrl = req.files.resourceFile[0].path;
         }
 
-        // Process cover photo if available
+        // Cover photo (optional)
         let coverPhoto = '';
-        if (req.files && req.files.coverPhoto) {
+        if (req.files?.coverPhoto?.[0]) {
             coverPhoto = req.files.coverPhoto[0].path;
         }
 
-        // Create the resource
+        // Create and save
         const resource = await Resource.create({
             type,
             url: resourceUrl,
@@ -58,6 +59,7 @@ resources.createResource = async (req, res) => {
             message: 'Resource created successfully',
             data: resource,
         });
+
     } catch (error) {
         console.error('Error creating resource:', error);
         return res.status(500).json({
@@ -68,14 +70,13 @@ resources.createResource = async (req, res) => {
     }
 };
 
-// Get all resources
+// GET ALL RESOURCES
 resources.getAllResources = async (req, res) => {
     try {
-        const resources = await Resource.find().sort({ createdAt: -1 });
-
+        const allResources = await Resource.find().sort({ createdAt: -1 });
         return res.status(200).json({
             success: true,
-            data: resources,
+            data: allResources,
         });
     } catch (error) {
         return res.status(500).json({
@@ -86,7 +87,7 @@ resources.getAllResources = async (req, res) => {
     }
 };
 
-// Get a single resource by ID
+// GET RESOURCE BY ID
 resources.getResourceById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -112,11 +113,31 @@ resources.getResourceById = async (req, res) => {
     }
 };
 
-// Update a resource
+// UPDATE RESOURCE
 resources.updateResource = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedResource = await Resource.findByIdAndUpdate(id, req.body, {
+        const { title, description, type, url } = req.body;
+
+        const updatedFields = {
+            title,
+            description,
+            type,
+        };
+
+        // Update URL based on type
+        if (type === 'link') {
+            updatedFields.url = url;
+        } else if (type === 'file' && req.files?.resourceFile?.[0]) {
+            updatedFields.url = req.files.resourceFile[0].path;
+        }
+
+        // Handle cover photo update if available
+        if (req.files?.coverPhoto?.[0]) {
+            updatedFields.coverPhoto = req.files.coverPhoto[0].path;
+        }
+
+        const updatedResource = await Resource.findByIdAndUpdate(id, updatedFields, {
             new: true,
             runValidators: true,
         });
@@ -134,6 +155,7 @@ resources.updateResource = async (req, res) => {
             data: updatedResource,
         });
     } catch (error) {
+        console.error('Error updating resource:', error);
         return res.status(500).json({
             success: false,
             message: 'Server error while updating resource',
@@ -142,7 +164,7 @@ resources.updateResource = async (req, res) => {
     }
 };
 
-// Delete a resource
+// DELETE RESOURCE
 resources.deleteResource = async (req, res) => {
     try {
         const { id } = req.params;

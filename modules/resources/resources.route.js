@@ -16,7 +16,7 @@ const folder = "/resources";
 resourceRouter.post('/', uploader(folder, allowedFileTypes, maxSize).single("coverPhoto"), resourceFeatures.createResource);
 resourceRouter.get('/', resourceFeatures.getAllResources);
 resourceRouter.get('/:id', resourceFeatures.getResourceById);
-resourceRouter.patch('/:id', resourceFeatures.updateResource);
+resourceRouter.put('/:id', uploader(folder, allowedFileTypes, maxSize).single("coverPhoto"), resourceFeatures.updateResource);
 resourceRouter.delete('/:id', resourceFeatures.deleteResource);
 
 module.exports = resourceRouter;
