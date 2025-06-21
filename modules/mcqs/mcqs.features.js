@@ -49,6 +49,7 @@ mcqFeatures.getMcqsByTestId = async (req, res) => {
             data: mcqs
         });
     } catch (err) {
+        console.log(err.message);
         sendResponse(res, 500, {
             success: false,
             message: "Server error while fetching MCQs."
@@ -60,7 +61,6 @@ mcqFeatures.updateMcq = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedData = req.body;
-
         const updatedMcq = await Mcq.findByIdAndUpdate(id, updatedData, { new: true });
 
         if (!updatedMcq) {

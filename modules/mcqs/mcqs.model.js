@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require("mongoose");
 
 const mcqSchema = new mongoose.Schema(
     {
@@ -58,4 +58,5 @@ const mcqSchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model('MCQ', mcqSchema);
+const McqModel = mongoose.model('MCQ', mcqSchema);
+module.exports = McqModel;
