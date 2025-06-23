@@ -1,5 +1,5 @@
-const Payment = require('../models/payment.model');
-const sendResponse = require('../utils/sendResponse');
+const Payment = require('./payment.model');
+const sendResponse = require('../../utils/sendResponse');
 
 const paymentFeatures = {};
 

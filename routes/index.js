@@ -7,6 +7,7 @@ const testRouter = require("../modules/practicetests/test.route");
 const mcqRouter = require("../modules/mcqs/mcqs.route");
 const resourceRouter = require("../modules/resources/resources.route");
 const broadcastRouter = require("../modules/broadcasts/broadcasts.route");
+const paymentRouter = require("../modules/payment/payment.route");
 
 const router = require("express").Router();
 
@@ -19,7 +20,8 @@ const routes = [
     { path: "/tests", router: testRouter },
     { path: "/mcq", router: mcqRouter },
     { path: "/resource", router: resourceRouter },
-    { path: "/broadcasts", router: broadcastRouter }
+    { path: "/broadcasts", router: broadcastRouter },
+    { path: "/payments", router: paymentRouter }
 ];
 
 routes.map(r => router.use(r.path, r.router));
