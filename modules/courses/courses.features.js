@@ -13,7 +13,8 @@ courseFeatures.createCourse = async (req, res) => {
             isPaid,
             price,
             courseDescription,
-            instructorName,
+            instructorId,
+            level,
             startTime
         } = req.body;
 
@@ -36,10 +37,11 @@ courseFeatures.createCourse = async (req, res) => {
             courseStatus,
             isPaid,
             description: courseDescription,
-            instructorName,
             startTime: courseType === "live" ? startTime : null,
             courseImage: courseImagePath,
-            price
+            price,
+            instructorId,
+            level
         });
 
         await newCourse.save();
