@@ -33,7 +33,8 @@ courseMatrialFeatures.createMaterial = async (req, res) => {
 // GET ALL Course Materials
 courseMatrialFeatures.getAllMaterials = async (req, res) => {
     try {
-        const materials = await CourseMaterial.find().populate('courseId');
+        const { courseId } = req.params;
+        const materials = await CourseMaterial.find({ courseId }).populate('courseId');
 
         return sendResponse(res, 200, {
             success: true,

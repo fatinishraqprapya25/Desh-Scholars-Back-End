@@ -8,6 +8,7 @@ const mcqRouter = require("../modules/mcqs/mcqs.route");
 const resourceRouter = require("../modules/resources/resources.route");
 const broadcastRouter = require("../modules/broadcasts/broadcasts.route");
 const paymentRouter = require("../modules/payment/payment.route");
+const courseMatrialRouter = require("../modules/courseMatrials/courseMatrials.route");
 
 const router = require("express").Router();
 
@@ -21,6 +22,7 @@ const routes = [
     { path: "/mcq", router: mcqRouter },
     { path: "/resource", router: resourceRouter },
     { path: "/broadcasts", router: broadcastRouter },
+    { path: "/matrials", router: courseMatrialRouter },
     { path: "/payments", router: paymentRouter }
 ];
 
