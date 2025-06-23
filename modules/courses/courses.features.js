@@ -62,19 +62,48 @@ courseFeatures.createCourse = async (req, res) => {
 
 courseFeatures.getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ isDeleted: false });
+        const { search, level, price } = req.query;
+
+        const filter = {
+            isDeleted: false,
+        };
+
+        if (search) {
+            const searchRegex = new RegExp(search, 'i');
+            filter.$or = [
+                { courseName: searchRegex },
+                { description: searchRegex }
+            ];
+        }
+
+        if (level && ["beginner", "intermediate", "advanced"].includes(level.toLowerCase())) {
+            filter.level = level.toLowerCase();
+        }
+
+        if (price) {
+            if (price.toLowerCase() === "paid") {
+                filter.isPaid = true;
+            } else if (price.toLowerCase() === "free") {
+                filter.isPaid = false;
+            }
+        }
+
+        const courses = await Course.find(filter);
+
         sendResponse(res, 200, {
             success: true,
             message: "Courses fetched successfully.",
-            data: courses
+            data: courses,
         });
     } catch (err) {
+        console.error("Error fetching courses:", err);
         sendResponse(res, 500, {
             success: false,
-            message: "Server error while fetching courses."
+            message: "Server error while fetching courses.",
         });
     }
 };
+
 
 courseFeatures.getCourseById = async (req, res) => {
     try {
