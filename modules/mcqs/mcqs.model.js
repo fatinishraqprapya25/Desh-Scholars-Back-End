@@ -7,11 +7,6 @@ const mcqSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
-        subject: {
-            type: String,
-            required: true,
-            trim: true
-        },
         options: {
             type: [String],
             required: true,
