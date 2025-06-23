@@ -17,6 +17,11 @@ const courseSchema = new mongoose.Schema(
             enum: ["active", "inactive", "draft"],
             default: "draft",
         },
+        duration: {
+            type: String,
+            required: true,
+            default: "0 Hours"
+        },
         isPaid: {
             type: Boolean,
             required: [true, "Please specify if the course is paid"],
@@ -40,6 +45,10 @@ const courseSchema = new mongoose.Schema(
         startTime: {
             type: Date,
             default: null,
+        },
+        ratings: {
+            type: Array,
+            default: []
         },
         isDeleted: {
             type: Boolean,
