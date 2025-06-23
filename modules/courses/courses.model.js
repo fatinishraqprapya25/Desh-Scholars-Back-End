@@ -34,10 +34,9 @@ const courseSchema = new mongoose.Schema(
             trim: true,
             required: [true, "Course description is required"],
         },
-        instructorName: {
-            type: String,
-            required: [true, "Instructor name is required"],
-            trim: true,
+        instructorId: {
+            type: mongoose.Types.ObjectId,
+            required: [true, "Instructor id is required"],
         },
         courseImage: {
             type: String,
