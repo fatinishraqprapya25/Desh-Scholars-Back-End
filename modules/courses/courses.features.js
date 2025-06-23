@@ -133,7 +133,7 @@ courseFeatures.updateCourse = async (req, res) => {
     } catch (err) {
         sendResponse(res, 500, {
             success: false,
-            message: "Error updating course"
+            message: err.message
         });
     }
 };
