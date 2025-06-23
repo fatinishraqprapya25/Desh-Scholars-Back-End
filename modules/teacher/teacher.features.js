@@ -62,6 +62,23 @@ teacherFeatures.getAllTeachers = async (req, res) => {
     }
 };
 
+teacherFeatures.getTeacherById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const teachers = await Teacher.findOne({ _id: id }, { isDeleted: false }).select("-password");
+        sendResponse(res, 200, {
+            success: true,
+            message: "Teachers retrieved successfully",
+            data: teachers,
+        });
+    } catch (error) {
+        sendResponse(res, 500, {
+            success: false,
+            message: "Failed to fetch teachers",
+        });
+    }
+};
+
 teacherFeatures.updateTeacher = async (req, res) => {
     try {
         const { id } = req.params;

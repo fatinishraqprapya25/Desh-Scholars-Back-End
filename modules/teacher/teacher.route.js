@@ -8,5 +8,6 @@ teacherRouter.post("/", verifyAdmin, validateRequest(createTeacherSchema), teach
 teacherRouter.put("/", verifyAdmin, validateRequest(updateTeacherSchema), teacherFeatures.updateTeacher);
 teacherRouter.delete("/:id", verifyAdmin, validateRequest(updateTeacherSchema), teacherFeatures.deleteTeacher);
 teacherRouter.get("/", verifyAdmin, teacherFeatures.getAllTeachers);
+teacherRouter.get("/:id", verifyAdmin, teacherFeatures.getTeacherById);
 
 module.exports = teacherRouter;
