@@ -112,6 +112,7 @@ courseFeatures.updateCourse = async (req, res) => {
                 message: "Start time is required for live courses"
             });
         }
+        if (updatedData.courseType === "recorded") delete updatedData.startTime;
         const updated = await Course.findOneAndUpdate(
             { _id: id, isDeleted: false },
             updatedData,
