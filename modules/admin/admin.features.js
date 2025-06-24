@@ -3,9 +3,13 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
 const sendResponse = require("../../utils/sendResponse");
+const Auth = require("../auth/auth.model");
+const Payment = require("../payment/payment.model");
+const Course = require("../courses/courses.model");
+
 
 const adminFeatures = {};
- 
+
 adminFeatures.validateToken = async (req, res) => {
     try {
         const token = req.headers["authorization"];
@@ -81,6 +85,32 @@ adminFeatures.loginAdmin = async (req, res) => {
         sendResponse(res, 500, {
             success: false,
             message: "Error occurred during login."
+        });
+    }
+};
+
+adminFeatures.getRecentActivities = async (req, res) => {
+    try {
+        const [lastAccount, lastPayment, lastCourse] = await Promise.all([
+            Auth.findOne().sort({ createdAt: -1 }),
+            Payment.findOne().sort({ createdAt: -1 }),
+            Course.findOne().sort({ createdAt: -1 }),
+        ]);
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Recent activities fetched successfully.",
+            data: {
+                lastAccountCreated: lastAccount,
+                lastPaymentMade: lastPayment,
+                lastCourseCreated: lastCourse,
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching recent activities:", error);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while fetching recent activities.",
         });
     }
 };

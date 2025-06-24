@@ -10,5 +10,6 @@ adminRouter.get("/validate-admin", adminFeatures.validateToken);
 adminRouter.post("/validate", adminFeatures.validateAdmin);
 adminRouter.get("/", verifyAdmin, adminFeatures.getAllAdmins);
 adminRouter.delete("/:id", verifyAdmin, adminFeatures.deleteAdmin);
+adminRouter.get("/activities", verifyAdmin, adminFeatures.getRecentActivities);
 
 module.exports = adminRouter;
