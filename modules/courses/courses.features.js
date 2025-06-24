@@ -64,22 +64,23 @@ courseFeatures.getAllCourses = async (req, res) => {
     try {
         const { search, level, price } = req.query;
 
-        const filter = {
-            isDeleted: false,
-        };
+        const filter = { isDeleted: false };
 
+        // Search filter on courseName or description (case-insensitive)
         if (search) {
-            const searchRegex = new RegExp(search, 'i');
+            const searchRegex = new RegExp(search, "i");
             filter.$or = [
                 { courseName: searchRegex },
-                { description: searchRegex }
+                { description: searchRegex },
             ];
         }
 
-        if (level && ["beginner", "intermediate", "advanced"].includes(level.toLowerCase())) {
-            filter.level = level.toLowerCase();
+        // Level filter using case-insensitive regex for exact match
+        if (level) {
+            filter.level = { $regex: new RegExp(`^${level}$`, "i") };
         }
 
+        // Price filter: free or paid
         if (price) {
             if (price.toLowerCase() === "paid") {
                 filter.isPaid = true;
@@ -88,18 +89,55 @@ courseFeatures.getAllCourses = async (req, res) => {
             }
         }
 
+        console.log("Applied filter:", filter);
+
         const courses = await Course.find(filter);
 
-        sendResponse(res, 200, {
+        console.log("Matched courses count:", courses.length);
+
+        return sendResponse(res, 200, {
             success: true,
             message: "Courses fetched successfully.",
             data: courses,
         });
     } catch (err) {
         console.error("Error fetching courses:", err);
-        sendResponse(res, 500, {
+        return sendResponse(res, 500, {
             success: false,
             message: "Server error while fetching courses.",
+        });
+    }
+};
+
+courseFeatures.get2Courses = async (req, res) => {
+    try {
+        const totalCourses = await Course.countDocuments({ isDeleted: false });
+
+        if (totalCourses < 2) {
+            const availableCourses = await Course.find({ isDeleted: false });
+            return sendResponse(res, 200, {
+                success: true,
+                message: "Less than two courses available.",
+                data: availableCourses,
+            });
+        }
+
+        const randomCourses = await Course.aggregate([
+            { $match: { isDeleted: false } },
+            { $sample: { size: 2 } }
+        ]);
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Two random courses fetched successfully.",
+            data: randomCourses,
+        });
+
+    } catch (error) {
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Failed to fetch random courses.",
+            error: error.message,
         });
     }
 };
