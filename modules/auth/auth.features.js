@@ -59,7 +59,7 @@ authFeatures.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user._id, email: user.email },
+            { id: user._id, email: user.email, name: user.name },
             config.jwtSecret,
             { expiresIn: "30d" }
         );
