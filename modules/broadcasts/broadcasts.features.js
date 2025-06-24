@@ -5,16 +5,22 @@ const broadcastsFeatures = {};
 
 broadcastsFeatures.createBroadcast = async (req, res) => {
     try {
-        const { title, description } = req.body;
+        const { title, description, audience } = req.body;
 
-        if (!title || !description) {
+        if (!title || !description || !audience) {
             return sendResponse(res, 400, {
                 success: false,
-                message: 'Title and description are required.',
+                message: 'Title and description and audience are required.',
             });
         }
 
-        const broadcast = await Broadcast.create({ title, description });
+        const broadcastData = {
+            title,
+            description,
+            for: audience
+        }
+
+        const broadcast = await Broadcast.create(broadcastData);
 
         return sendResponse(res, 201, {
             success: true,
@@ -33,7 +39,6 @@ broadcastsFeatures.createBroadcast = async (req, res) => {
 broadcastsFeatures.getAllBroadcasts = async (req, res) => {
     try {
         const { broadcastFor } = req.params;
-        console.log(broadcastFor);
 
         if (broadcastFor === "all") {
             const broadcasts = await Broadcast.find();
