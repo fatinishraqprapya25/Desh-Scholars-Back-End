@@ -32,7 +32,23 @@ broadcastsFeatures.createBroadcast = async (req, res) => {
 
 broadcastsFeatures.getAllBroadcasts = async (req, res) => {
     try {
-        const broadcasts = await Broadcast.find().sort({ createdAt: -1 });
+        const { broadcastFor } = req.params;
+        console.log(broadcastFor);
+
+        if (broadcastFor === "all") {
+            const broadcasts = await Broadcast.find();
+            return sendResponse(res, 200, {
+                success: true,
+                data: broadcasts,
+            });
+        }
+
+        const broadcasts = await Broadcast.find({
+            $or: [
+                { for: broadcastFor },
+                { for: 'both' }
+            ]
+        }).sort({ createdAt: -1 });
 
         return sendResponse(res, 200, {
             success: true,
@@ -46,6 +62,7 @@ broadcastsFeatures.getAllBroadcasts = async (req, res) => {
         });
     }
 };
+
 
 broadcastsFeatures.getBroadcastById = async (req, res) => {
     try {
