@@ -69,6 +69,24 @@ paymentFeatures.getAllPayments = async (req, res) => {
     }
 };
 
+paymentFeatures.getApprovedPayments = async (req, res) => {
+    try {
+        const payments = await Payment.find({ status: "Approved" });
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: 'Payments fetched successfully',
+            data: payments,
+        });
+    } catch (error) {
+        return sendResponse(res, 500, {
+            success: false,
+            message: 'Failed to fetch payments',
+            error: error.message,
+        });
+    }
+};
+
 paymentFeatures.updatePaymentStatus = async (req, res) => {
     try {
         const { id } = req.params;

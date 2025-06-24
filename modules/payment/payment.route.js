@@ -5,6 +5,7 @@ const paymentRouter = require("express").Router();
 paymentRouter.post("/", paymentFeatures.createPayment);
 paymentRouter.get("/", verifyAdmin, paymentFeatures.getAllPayments);
 paymentRouter.get("/:id", paymentFeatures.getPaymentById);
+paymentRouter.get("/status/approved", paymentFeatures.getApprovedPayments);
 paymentRouter.put("/:id", paymentFeatures.updatePaymentStatus);
 
 module.exports = paymentRouter;
