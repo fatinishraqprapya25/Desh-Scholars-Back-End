@@ -60,6 +60,38 @@ courseFeatures.createCourse = async (req, res) => {
     }
 };
 
+courseFeatures.getCoursesWithEnrolledCount = async (req, res) => {
+    try {
+        const courses = await Course.find({ isDeleted: false });
+
+        const courseWithCounts = await Promise.all(
+            courses.map(async course => {
+                const count = await Payment.countDocuments({
+                    purchaseId: course._id,
+                    status: 'Approved'
+                });
+
+                return {
+                    ...course.toObject(),
+                    enrolledCount: count
+                };
+            })
+        );
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: 'Courses with enrolled counts fetched successfully.',
+            data: courseWithCounts
+        });
+    } catch (err) {
+        return sendResponse(res, 500, {
+            success: false,
+            message: 'Server error while fetching courses with enrollment count.',
+            error: err.message
+        });
+    }
+};
+
 courseFeatures.getAllCourses = async (req, res) => {
     try {
         const { search, level, price } = req.query;
