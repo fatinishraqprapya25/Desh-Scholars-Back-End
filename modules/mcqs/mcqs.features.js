@@ -31,6 +31,31 @@ mcqFeatures.createMcq = async (req, res) => {
     }
 };
 
+mcqFeatures.getMcqCountByTestId = async (req, res) => {
+    try {
+        const { testId } = req.params;
+        if (!testId) {
+            return sendResponse(res, 400, {
+                success: false,
+                message: "testId parameter is required."
+            });
+        }
+
+        const mcqCount = await Mcq.countDocuments({ testId });
+
+        sendResponse(res, 200, {
+            success: true,
+            message: "MCQ count fetched successfully.",
+            data: mcqCount
+        });
+    } catch (err) {
+        sendResponse(res, 500, {
+            success: false,
+            message: "Server error while fetching MCQ count."
+        });
+    }
+};
+
 mcqFeatures.getMcqsByTestId = async (req, res) => {
     try {
         const { testId } = req.params;

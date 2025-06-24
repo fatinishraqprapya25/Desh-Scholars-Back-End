@@ -5,6 +5,33 @@ const config = require("../../config");
 const sendResponse = require("../../utils/sendResponse");
 
 const adminFeatures = {};
+ 
+adminFeatures.validateToken = async (req, res) => {
+    try {
+        const token = req.headers["authorization"];
+        if (!token) {
+            return sendResponse(res, 401, {
+                success: false,
+                message: "token not found!"
+            });
+        }
+        const authorization = token.split(" ")[1];
+        const decoded = jwt.verify(authorization, config.jwtSecret);
+
+        sendResponse(res, 200, {
+            success: true,
+            message: "token is valid!",
+            data: decoded
+        });
+
+    } catch (err) {
+        sendResponse(res, 401, {
+            success: false,
+            message: "invalid token"
+        });
+    }
+
+}
 
 adminFeatures.loginAdmin = async (req, res) => {
     try {
