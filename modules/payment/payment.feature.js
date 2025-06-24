@@ -12,7 +12,7 @@ paymentFeatures.createPayment = async (req, res) => {
             transactionId,
             userId
         } = req.body;
-        console.log(req.body)
+
         if (!purchaseId || !userId || !ammount || !paymentMethod || !transactionId) {
             return sendResponse(res, 400, {
                 success: false,
