@@ -52,7 +52,6 @@ courseFeatures.createCourse = async (req, res) => {
             data: newCourse
         });
     } catch (err) {
-        console.error(err.message);
         sendResponse(res, 500, {
             success: false,
             message: "Server error while creating course."
@@ -89,11 +88,7 @@ courseFeatures.getAllCourses = async (req, res) => {
             }
         }
 
-        console.log("Applied filter:", filter);
-
         const courses = await Course.find(filter);
-
-        console.log("Matched courses count:", courses.length);
 
         return sendResponse(res, 200, {
             success: true,
@@ -101,7 +96,6 @@ courseFeatures.getAllCourses = async (req, res) => {
             data: courses,
         });
     } catch (err) {
-        console.error("Error fetching courses:", err);
         return sendResponse(res, 500, {
             success: false,
             message: "Server error while fetching courses.",

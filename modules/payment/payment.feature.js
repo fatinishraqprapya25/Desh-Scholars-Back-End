@@ -7,13 +7,13 @@ paymentFeatures.createPayment = async (req, res) => {
     try {
         const {
             purchaseId,
-            userId,
-            amount,
+            ammount,
             paymentMethod,
             transactionId,
+            userId
         } = req.body;
-
-        if (!purchaseId || !userId || !amount || !paymentMethod || !transactionId) {
+        console.log(req.body)
+        if (!purchaseId || !userId || !ammount || !paymentMethod || !transactionId) {
             return sendResponse(res, 400, {
                 success: false,
                 message: 'All required fields must be provided.',
@@ -31,10 +31,9 @@ paymentFeatures.createPayment = async (req, res) => {
         const payment = await Payment.create({
             purchaseId,
             userId,
-            amount,
+            amount: ammount,
             paymentMethod,
             transactionId,
-            metadata,
         });
 
         return sendResponse(res, 200, {
@@ -43,6 +42,7 @@ paymentFeatures.createPayment = async (req, res) => {
             data: payment,
         });
     } catch (error) {
+        console.log(error.message);
         return sendResponse(res, 500, {
             success: false,
             message: 'Failed to create payment',
@@ -74,7 +74,7 @@ paymentFeatures.updatePaymentStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        if (!['approved', 'pending'].includes(status)) {
+        if (!['Approved', 'Pending'].includes(status)) {
             return sendResponse(res, 400, {
                 success: false,
                 message: 'Invalid status value',
@@ -100,6 +100,7 @@ paymentFeatures.updatePaymentStatus = async (req, res) => {
             data: payment,
         });
     } catch (error) {
+        console.log(error.message);
         return sendResponse(res, 500, {
             success: false,
             message: 'Failed to update payment status',
