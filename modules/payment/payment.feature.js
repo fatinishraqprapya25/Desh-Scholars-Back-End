@@ -87,6 +87,60 @@ paymentFeatures.getApprovedPayments = async (req, res) => {
     }
 };
 
+paymentFeatures.getMonthlyEarnings = async (req, res) => {
+    try {
+        const currentYear = new Date().getFullYear();
+
+        const earnings = await Payment.aggregate([
+            {
+                $match: {
+                    status: "Approved",
+                    createdAt: {
+                        $gte: new Date(`${currentYear}-01-01T00:00:00Z`),
+                        $lte: new Date(`${currentYear}-12-31T23:59:59Z`)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $month: "$createdAt" },
+                    totalEarnings: { $sum: "$amount" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: "$_id",
+                    earnings: "$totalEarnings"
+                }
+            }
+        ]);
+
+        // Map MongoDB month numbers to month names
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyEarningsData = monthNames.map((name, index) => {
+            const monthData = earnings.find((e) => e.month === index + 1);
+            return {
+                name,
+                earnings: monthData ? monthData.earnings : 0
+            };
+        });
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Monthly earnings fetched successfully.",
+            data: monthlyEarningsData
+        });
+    } catch (error) {
+        console.error(error);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Failed to fetch monthly earnings.",
+            error: error.message
+        });
+    }
+};
+
 paymentFeatures.updatePaymentStatus = async (req, res) => {
     try {
         const { id } = req.params;
