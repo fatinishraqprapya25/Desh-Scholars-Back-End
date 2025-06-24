@@ -1,6 +1,7 @@
 const Course = require("./courses.model");
 const sendResponse = require("../../utils/sendResponse");
 const path = require("path");
+const Payment = require("../payment/payment.model");
 
 const courseFeatures = {};
 
@@ -132,6 +133,43 @@ courseFeatures.get2Courses = async (req, res) => {
             success: false,
             message: "Failed to fetch random courses.",
             error: error.message,
+        });
+    }
+};
+
+
+courseFeatures.getCourseByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        const payments = await Payment.find({ userId, status: 'Approved' });
+
+        if (!payments.length) {
+            return sendResponse(res, 200, {
+                success: true,
+                message: "No courses found!",
+                data: [],
+            });
+        }
+
+        const courseIds = payments.map(payment => payment.purchaseId);
+
+        const courses = await Promise.all(
+            courseIds.map(id => Course.findById(id))
+        );
+
+        const filteredCourses = courses.filter(course => course);
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Courses fetched successfully",
+            data: filteredCourses,
+        });
+    } catch (err) {
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Error fetching user's courses",
+            error: err.message,
         });
     }
 };
