@@ -111,4 +111,22 @@ authFeatures.validateToken = async (req, res) => {
 
 }
 
+authFeatures.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({});
+
+        sendResponse(res, 200, {
+            success: true,
+            message: "users fetched successfully",
+            data: users
+        });
+
+    } catch (err) {
+        sendResponse(res, 401, {
+            success: false,
+            message: "invalid token"
+        });
+    }
+}
+
 module.exports = authFeatures;

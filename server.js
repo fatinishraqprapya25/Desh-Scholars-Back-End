@@ -44,6 +44,7 @@ process.on("uncaughtException", (err) => {
 });
 
 process.on("unhandledRejection", (err) => {
+    console.log(err);
     console.error("❌ Unhandled Rejection: ", err.message);
     handleShutdown("Unhandled Rejection");
 });
