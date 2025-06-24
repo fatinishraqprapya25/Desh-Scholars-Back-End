@@ -10,6 +10,7 @@ courseRouter.post("/", verifyAdmin, uploader("courses", allowedFileTypes, maxSiz
 
 courseRouter.get("/", courseFeatures.getAllCourses);
 courseRouter.get("/:id", courseFeatures.getCourseById);
+courseRouter.get("/c/two", courseFeatures.get2Courses);
 courseRouter.delete("/:id", verifyAdmin, courseFeatures.deleteCourse);
 courseRouter.put("/:id", verifyAdmin, uploader("courses", allowedFileTypes, 20).single("courseImage"), courseFeatures.updateCourse);
 
