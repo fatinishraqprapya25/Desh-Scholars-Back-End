@@ -10,4 +10,6 @@ teacherRouter.delete("/:id", verifyAdmin, validateRequest(updateTeacherSchema), 
 teacherRouter.get("/", teacherFeatures.getAllTeachers);
 teacherRouter.get("/:id", teacherFeatures.getTeacherById);
 
+teacherRouter.post("/login", teacherFeatures.login);
+
 module.exports = teacherRouter;

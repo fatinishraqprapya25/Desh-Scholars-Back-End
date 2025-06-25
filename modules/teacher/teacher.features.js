@@ -2,6 +2,7 @@ const Teacher = require("./teacher.model");
 const bcrypt = require("bcrypt");
 const config = require("../../config");
 const sendResponse = require("../../utils/sendResponse");
+const jwt = require("jsonwebtoken");
 
 const teacherFeatures = {};
 
@@ -49,13 +50,57 @@ teacherFeatures.createTeacher = async (req, res) => {
 teacherFeatures.login = async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        if (!email || !password) {
+            return sendResponse(res, 400, {
+                success: false,
+                message: "Email and password are required",
+            });
+        }
+
+        const teacher = await Teacher.findOne({ email });
+        if (!teacher) {
+            return sendResponse(res, 401, {
+                success: false,
+                message: "Invalid email or password",
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, teacher.password);
+        if (!isMatch) {
+            return sendResponse(res, 401, {
+                success: false,
+                message: "Invalid email or password",
+            });
+        }
+
+        const token = jwt.sign(
+            { id: teacher._id, name: teacher.name },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Teacher logged in successfully",
+            data: {
+                token,
+                teacher: {
+                    id: teacher._id,
+                    name: teacher.name,
+                    email: teacher.email,
+                }
+            }
+        });
     } catch (err) {
-        sendResponse(res, 500, {
+        console.error("Teacher login error:", err);
+        return sendResponse(res, 500, {
             success: false,
-            message: "failed to logged in teacher!"
+            message: "Failed to login teacher!",
         });
     }
-}
+};
+
 
 teacherFeatures.getAllTeachers = async (req, res) => {
     try {
