@@ -231,6 +231,30 @@ courseFeatures.getCourseById = async (req, res) => {
     }
 };
 
+courseFeatures.getCourseByTeacherId = async (req, res) => {
+    try {
+        const course = await Course.find({ instructorId: req.params.id, isDeleted: false });
+
+        if (!course) {
+            return sendResponse(res, 404, {
+                success: false,
+                message: "no courses found!"
+            });
+        }
+
+        sendResponse(res, 200, {
+            success: true,
+            message: "courses fetched successfully!",
+            data: course
+        });
+    } catch (err) {
+        sendResponse(res, 500, {
+            success: false,
+            message: "Error getting course"
+        });
+    }
+};
+
 courseFeatures.updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
