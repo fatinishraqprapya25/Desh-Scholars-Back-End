@@ -39,7 +39,6 @@ courseModuleFeatures.createModule = async (req, res) => {
 courseModuleFeatures.getModulesByCourseId = async (req, res) => {
     try {
         const { courseId } = req.params;
-
         if (!courseId) {
             return sendResponse(res, 400, {
                 success: false,
@@ -48,6 +47,8 @@ courseModuleFeatures.getModulesByCourseId = async (req, res) => {
         }
 
         const modules = await CourseModule.find({ courseId }).sort({ createdAt: 1 });
+
+        console.log(modules);
 
         sendResponse(res, 200, {
             success: true,
