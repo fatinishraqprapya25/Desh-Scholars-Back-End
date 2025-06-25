@@ -40,6 +40,10 @@ const mcqSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        chaptar: {
+            type: String,
+            required: true,
+        },
         difficulty: {
             type: String,
             enum: ['easy', 'medium', 'hard'],
@@ -47,9 +51,14 @@ const mcqSchema = new mongoose.Schema(
         },
         tags: {
             type: [String],
-            default: [],
+            default: ["bluebook only", "exclude bluebook"],
+            required: true
         },
-
+        scoreBond: {
+            type: String,
+            enum: ["1", "2", "3", "4", "5", "6", "7"],
+            required: true
+        },
         type: {
             type: String,
             enum: ['mock', 'test'],
