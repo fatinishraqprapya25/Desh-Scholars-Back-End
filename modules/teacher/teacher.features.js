@@ -101,7 +101,7 @@ teacherFeatures.login = async (req, res) => {
     }
 };
 
-teacherFeatures.validateAdmin = async (req, res) => {
+teacherFeatures.validateTeacher = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
 
@@ -115,18 +115,18 @@ teacherFeatures.validateAdmin = async (req, res) => {
         const token = authHeader.split(" ")[1];
 
         const decoded = jwt.verify(token, config.jwtSecret);
-        const admin = await Teacher.findById(decoded._id).select("-password");
-        if (!admin) {
+        const teacher = await Teacher.findById(decoded.id).select("-password");
+        if (!teacher) {
             return sendResponse(res, 404, {
                 success: false,
-                message: "Admin not found"
+                message: "Teacher not found"
             });
         }
 
         sendResponse(res, 200, {
             success: true,
             message: "Token is valid",
-            data: admin
+            data: teacher
         });
 
     } catch (error) {

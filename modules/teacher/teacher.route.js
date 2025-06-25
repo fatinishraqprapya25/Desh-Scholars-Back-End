@@ -11,6 +11,6 @@ teacherRouter.get("/", teacherFeatures.getAllTeachers);
 teacherRouter.get("/:id", teacherFeatures.getTeacherById);
 
 teacherRouter.post("/login", teacherFeatures.login);
-teacherRouter.get("/validate/token", teacherFeatures.login);
+teacherRouter.get("/validate/token", teacherFeatures.validateTeacher);
 
 module.exports = teacherRouter;
