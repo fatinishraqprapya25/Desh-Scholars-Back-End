@@ -40,7 +40,7 @@ const mcqSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        chaptar: {
+        chapter: {
             type: String,
             required: true,
         },

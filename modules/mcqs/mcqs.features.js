@@ -5,28 +5,68 @@ const mcqFeatures = {};
 
 mcqFeatures.createMcq = async (req, res) => {
     try {
-        const { question, options, correctAnswers, type, testId, topic } = req.body;
+        const {
+            question,
+            options,
+            correctAnswers,
+            type,
+            testId,
+            topic,
+            subject,
+            chapter,
+            explanation,
+            difficulty,
+            tags,
+            scoreBond
+        } = req.body;
 
-        if (!question || !Array.isArray(options) || options.length < 2 || !Array.isArray(correctAnswers) || correctAnswers.length < 1 || !type || !testId || !topic) {
+        // Basic validations
+        if (
+            !question ||
+            !Array.isArray(options) || options.length < 2 ||
+            !Array.isArray(correctAnswers) || correctAnswers.length < 1 ||
+            !type ||
+            !testId ||
+            !topic ||
+            !subject ||
+            !difficulty ||
+            !Array.isArray(tags) || tags.length !== 1
+        ) {
             return sendResponse(res, 400, {
                 success: false,
-                message: "Required fields: question, options (min 2), correctAnswers (min 1), type, testId."
+                message:
+                    "Required fields: question, options (min 2), correctAnswers (min 1), type, testId, topic, subject, difficulty, tags (single)."
             });
         }
 
-        const newMcq = new Mcq({ question, options, correctAnswers, type, testId, topic });
+        // Create new MCQ document
+        const newMcq = new Mcq({
+            question,
+            options,
+            correctAnswers,
+            type,
+            testId,
+            topic,
+            subject,
+            chapter: chapter || '',
+            explanation: explanation || '',
+            difficulty,
+            tags,
+            scoreBond: scoreBond || '1'
+        });
+
         await newMcq.save();
 
-        sendResponse(res, 201, {
+        return sendResponse(res, 201, {
             success: true,
             message: "MCQ created successfully.",
-            data: newMcq
+            data: newMcq,
         });
     } catch (error) {
-        console.error(error.message);
-        sendResponse(res, 500, {
+        console.error("Error in createMcq:", error.message);
+        return sendResponse(res, 500, {
             success: false,
-            message: "Server error while creating MCQ."
+            message: "Server error while creating MCQ.",
         });
     }
 };
