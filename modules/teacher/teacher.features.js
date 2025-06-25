@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const config = require("../../config");
 const sendResponse = require("../../utils/sendResponse");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 const teacherFeatures = {};
 
@@ -179,6 +180,11 @@ teacherFeatures.updateTeacher = async (req, res) => {
 
         if (updateData.password) {
             updateData.password = await bcrypt.hash(updateData.password, parseInt(config.bcryptSaltRound));
+        }
+
+        if (req.file) {
+            const filePath = req.file.path;
+            updateData.profile = filePath;
         }
 
         const updatedTeacher = await Teacher.findByIdAndUpdate(id, updateData, {

@@ -26,6 +26,15 @@ const teacherSchema = new mongoose.Schema(
             type: String,
             enum: ["male", "female"],
         },
+        about: {
+            type: String,
+        },
+        profile: {
+            type: String
+        },
+        major: {
+            type: String
+        },
         isDeleted: {
             type: Boolean,
             default: false,
