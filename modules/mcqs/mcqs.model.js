@@ -16,7 +16,7 @@ const mcqSchema = new mongoose.Schema(
             },
         },
         correctAnswers: {
-            type: [Number], // index of correct options
+            type: [Number],
             required: true,
             validate: {
                 validator: function (arr) {
@@ -31,6 +31,14 @@ const mcqSchema = new mongoose.Schema(
         explanation: {
             type: String,
             default: '',
+        },
+        subject: {
+            type: String,
+            default: ''
+        },
+        topic: {
+            type: String,
+            required: true
         },
         difficulty: {
             type: String,

@@ -5,16 +5,16 @@ const mcqFeatures = {};
 
 mcqFeatures.createMcq = async (req, res) => {
     try {
-        const { question, options, correctAnswers, type, testId } = req.body;
+        const { question, options, correctAnswers, type, testId, topic } = req.body;
 
-        if (!question || !Array.isArray(options) || options.length < 2 || !Array.isArray(correctAnswers) || correctAnswers.length < 1 || !type || !testId) {
+        if (!question || !Array.isArray(options) || options.length < 2 || !Array.isArray(correctAnswers) || correctAnswers.length < 1 || !type || !testId || !topic) {
             return sendResponse(res, 400, {
                 success: false,
                 message: "Required fields: question, options (min 2), correctAnswers (min 1), type, testId."
             });
         }
 
-        const newMcq = new Mcq({ question, options, correctAnswers, type, testId });
+        const newMcq = new Mcq({ question, options, correctAnswers, type, testId, topic });
         await newMcq.save();
 
         sendResponse(res, 201, {
@@ -82,9 +82,11 @@ mcqFeatures.getMcqsByTestId = async (req, res) => {
 };
 
 mcqFeatures.updateMcq = async (req, res) => {
+    console.log(req.body);
     try {
         const { id } = req.params;
         const updatedData = req.body;
+        console.log(updatedData);
         console.log(updatedData);
         const updatedMcq = await Mcq.findByIdAndUpdate(id, updatedData, { new: true });
 
