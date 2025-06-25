@@ -46,6 +46,17 @@ teacherFeatures.createTeacher = async (req, res) => {
     }
 };
 
+teacherFeatures.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+    } catch (err) {
+        sendResponse(res, 500, {
+            success: false,
+            message: "failed to logged in teacher!"
+        });
+    }
+}
+
 teacherFeatures.getAllTeachers = async (req, res) => {
     try {
         const teachers = await Teacher.find({ isDeleted: false }).select("-password");
