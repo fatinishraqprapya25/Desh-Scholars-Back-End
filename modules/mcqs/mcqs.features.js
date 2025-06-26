@@ -74,7 +74,6 @@ mcqFeatures.createMcq = async (req, res) => {
 mcqFeatures.findMcqs = async (req, res) => {
     try {
         const { subject, chapter, topic } = req.query;
-
         if (!subject && !chapter && !topic) {
             return sendResponse(res, 400, {
                 success: false,
@@ -88,13 +87,6 @@ mcqFeatures.findMcqs = async (req, res) => {
         if (topic) query.topic = topic;
 
         const mcqs = await Mcq.find(query);
-
-        if (mcqs.length === 0) {
-            return sendResponse(res, 404, {
-                success: false,
-                message: "No MCQs found matching the provided query.",
-            });
-        }
 
         return sendResponse(res, 200, {
             success: true,
