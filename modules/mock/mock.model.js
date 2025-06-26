@@ -1,0 +1,32 @@
+const mongoose = require("mongoose");
+
+const mockSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        duration: {
+            type: Number,
+            required: true,
+            min: 1, 
+        },
+        description: {
+            type: String,
+            required: false,
+            trim: true,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        },
+    },
+    {
+        timestamps: true,
+    }
+);
+
+const Mock = mongoose.model("Mock", mockSchema);
+
+module.exports = Mock;
