@@ -41,7 +41,7 @@ mockQuestionFeatures.getAllMockQuestions = async (req, res) => {
 mockQuestionFeatures.getMockQuestionById = async (req, res) => {
     try {
         const { mockId } = req.params;
-        const mockQuestion = await MockQuestion.findOne({ mockId });
+        const mockQuestion = await MockQuestion.find({ mockId });
 
         sendResponse(res, 200, {
             success: true,
