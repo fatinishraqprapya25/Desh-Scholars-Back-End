@@ -71,6 +71,57 @@ mcqFeatures.createMcq = async (req, res) => {
     }
 };
 
+mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
+    try {
+        const aggregation = await Mcq.aggregate([
+            {
+                $facet: {
+                    bySubject: [
+                        {
+                            $group: {
+                                _id: "$subject",
+                                count: { $sum: 1 },
+                                questions: { $push: "$$ROOT" },
+                            }
+                        }
+                    ],
+                    byChapter: [
+                        {
+                            $group: {
+                                _id: "$chapter",
+                                count: { $sum: 1 },
+                                questions: { $push: "$$ROOT" },
+                            }
+                        }
+                    ],
+                    byTopic: [
+                        {
+                            $group: {
+                                _id: "$topic",
+                                count: { $sum: 1 },
+                                questions: { $push: "$$ROOT" },
+                            }
+                        }
+                    ]
+                }
+            }
+        ]);
+
+        sendResponse(res, 200, {
+            success: true,
+            message: "Aggregated MCQs fetched successfully",
+            data: aggregation[0], 
+        });
+    } catch (error) {
+        console.error("Aggregation error:", error.message);
+        sendResponse(res, 500, {
+            success: false,
+            message: "Server error while aggregating MCQs",
+        });
+    }
+};
+
+
 mcqFeatures.getMcqCountByTestId = async (req, res) => {
     try {
         const { testId } = req.params;

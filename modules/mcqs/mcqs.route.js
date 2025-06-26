@@ -4,6 +4,7 @@ const mcqFeatures = require("./mcqs.features");
 
 mcqRouter.post("/", verifyAdmin, mcqFeatures.createMcq);
 mcqRouter.get("/:testId", mcqFeatures.getMcqsByTestId);
+mcqRouter.get("/questions/aggregated", mcqFeatures.getAggrigiatedMcqs);
 mcqRouter.get("/count/:testId", mcqFeatures.getMcqsByTestId);
 mcqRouter.put("/:id", mcqFeatures.updateMcq);
 mcqRouter.delete("/:id", verifyAdmin, mcqFeatures.deleteMcq);
