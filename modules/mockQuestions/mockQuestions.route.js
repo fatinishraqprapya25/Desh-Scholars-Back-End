@@ -4,7 +4,7 @@ const mockQuestionRouter = require("express").Router();
 
 mockQuestionRouter.post("/", verifyAdmin, mockQuestionFeatures.createMockQuestion);
 mockQuestionRouter.get("/", mockQuestionFeatures.getAllMockQuestions);
-mockQuestionRouter.get("/:id", mockQuestionFeatures.getMockQuestionById);
+mockQuestionRouter.get("/:mockId", mockQuestionFeatures.getMockQuestionById);
 mockQuestionRouter.put("/:id", verifyAdmin, mockQuestionFeatures.updateMockQuestion);
 mockQuestionRouter.delete("/:id", verifyAdmin, mockQuestionFeatures.deleteMockQuestion);
 
