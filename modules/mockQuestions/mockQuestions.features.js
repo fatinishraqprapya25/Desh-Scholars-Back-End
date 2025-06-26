@@ -43,13 +43,6 @@ mockQuestionFeatures.getMockQuestionById = async (req, res) => {
         const { mockId } = req.params;
         const mockQuestion = await MockQuestion.findOne({ mockId });
 
-        if (!mockQuestion) {
-            return sendResponse(res, 404, {
-                success: false,
-                message: "Mock question not found.",
-            });
-        }
-
         sendResponse(res, 200, {
             success: true,
             message: "Mock question fetched successfully.",
