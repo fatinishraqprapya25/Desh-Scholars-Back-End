@@ -70,6 +70,46 @@ mcqFeatures.createMcq = async (req, res) => {
     }
 };
 
+
+mcqFeatures.findMcqs = async (req, res) => {
+    try {
+        const { subject, chapter, topic } = req.query;
+
+        if (!subject && !chapter && !topic) {
+            return sendResponse(res, 400, {
+                success: false,
+                message: "At least one query parameter is required: subject, chapter, or topic.",
+            });
+        }
+
+        const query = {};
+        if (subject) query.subject = subject;
+        if (chapter) query.chapter = chapter;
+        if (topic) query.topic = topic;
+
+        const mcqs = await Mcq.find(query);
+
+        if (mcqs.length === 0) {
+            return sendResponse(res, 404, {
+                success: false,
+                message: "No MCQs found matching the provided query.",
+            });
+        }
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "MCQs fetched successfully.",
+            data: mcqs,
+        });
+    } catch (error) {
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while fetching MCQs.",
+        });
+    }
+};
+
+
 mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
     const filters = req.body;
     try {
