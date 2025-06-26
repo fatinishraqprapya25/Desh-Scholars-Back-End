@@ -63,7 +63,6 @@ mcqFeatures.createMcq = async (req, res) => {
             data: newMcq,
         });
     } catch (error) {
-        console.error("Error in createMcq:", error.message);
         return sendResponse(res, 500, {
             success: false,
             message: "Server error while creating MCQ.",
