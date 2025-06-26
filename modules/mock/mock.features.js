@@ -54,9 +54,7 @@ mockController.getAllMocks = async (req, res) => {
 mockController.getMockById = async (req, res) => {
     try {
         const { id } = req.params;
-
         const mock = await Mock.findById(id);
-
         if (!mock) {
             return sendResponse(res, 404, {
                 success: false,
