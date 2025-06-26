@@ -72,8 +72,28 @@ mcqFeatures.createMcq = async (req, res) => {
 };
 
 mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
+    const filters = req.body;
     try {
+        const matchStage = {};
+
+        if (filters.activeQuestions) {
+            const normalizedActiveQuestions = filters.activeQuestions.toLowerCase();
+            matchStage.tags = normalizedActiveQuestions;
+        }
+
+        if (filters.difficulty) {
+            const normalizedDifficulty = filters.difficulty.toLowerCase();
+            matchStage.difficulty = normalizedDifficulty;
+        }
+
+        if (filters.scoreBand) {
+            matchStage.scoreBand = filters.scoreBand;
+        }
+
         const aggregation = await Mcq.aggregate([
+            {
+                $match: matchStage,
+            },
             {
                 $facet: {
                     bySubject: [
@@ -82,8 +102,8 @@ mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
                                 _id: "$subject",
                                 count: { $sum: 1 },
                                 questions: { $push: "$$ROOT" },
-                            }
-                        }
+                            },
+                        },
                     ],
                     byChapter: [
                         {
@@ -91,8 +111,8 @@ mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
                                 _id: "$chapter",
                                 count: { $sum: 1 },
                                 questions: { $push: "$$ROOT" },
-                            }
-                        }
+                            },
+                        },
                     ],
                     byTopic: [
                         {
@@ -100,17 +120,17 @@ mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
                                 _id: "$topic",
                                 count: { $sum: 1 },
                                 questions: { $push: "$$ROOT" },
-                            }
-                        }
-                    ]
-                }
-            }
+                            },
+                        },
+                    ],
+                },
+            },
         ]);
 
         sendResponse(res, 200, {
             success: true,
             message: "Aggregated MCQs fetched successfully",
-            data: aggregation[0], 
+            data: aggregation[0],
         });
     } catch (error) {
         console.error("Aggregation error:", error.message);
@@ -120,7 +140,6 @@ mcqFeatures.getAggrigiatedMcqs = async (req, res) => {
         });
     }
 };
-
 
 mcqFeatures.getMcqCountByTestId = async (req, res) => {
     try {
