@@ -66,5 +66,5 @@ const mockQuestionSchema = new mongoose.Schema(
     }
 );
 
-const mockQuestionModel = mongoose.model('MCQ', mockQuestionSchema);
-module.exports = mockQuestionModel;
+const mockQuestion = mongoose.model('MockQuestionModel', mockQuestionSchema);
+module.exports = mockQuestion;
