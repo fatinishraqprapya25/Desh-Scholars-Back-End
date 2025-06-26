@@ -9,6 +9,7 @@ const resourceRouter = require("../modules/resources/resources.route");
 const broadcastRouter = require("../modules/broadcasts/broadcasts.route");
 const paymentRouter = require("../modules/payment/payment.route");
 const courseMatrialRouter = require("../modules/courseMatrials/courseMatrials.route");
+const mockRouter = require("../modules/mock/mock.route");
 
 const router = require("express").Router();
 
@@ -19,6 +20,7 @@ const routes = [
     { path: "/courses", router: courseRouter },
     { path: "/modules", router: moduleRouter },
     { path: "/tests", router: testRouter },
+    { path: "/mock", router: mockRouter },
     { path: "/mcq", router: mcqRouter },
     { path: "/resource", router: resourceRouter },
     { path: "/broadcasts", router: broadcastRouter },

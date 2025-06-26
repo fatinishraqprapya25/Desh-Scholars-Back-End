@@ -10,12 +10,16 @@ const mockSchema = new mongoose.Schema(
         duration: {
             type: Number,
             required: true,
-            min: 1, 
+            min: 1,
         },
         description: {
             type: String,
             required: false,
             trim: true,
+        },
+        price: {
+            type: String,
+            default: "0"
         },
         createdAt: {
             type: Date,
