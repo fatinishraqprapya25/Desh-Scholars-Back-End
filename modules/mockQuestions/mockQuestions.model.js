@@ -56,7 +56,7 @@ const mockQuestionSchema = new mongoose.Schema(
             enum: ['mock', 'test'],
             required: true,
         },
-        testId: {
+        mockId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
         },
