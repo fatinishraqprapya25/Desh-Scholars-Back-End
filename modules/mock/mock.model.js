@@ -8,7 +8,7 @@ const mockSchema = new mongoose.Schema(
             trim: true,
         },
         duration: {
-            type: Number,
+            type: String,
             required: true,
             min: 1,
         },
