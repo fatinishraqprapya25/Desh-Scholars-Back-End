@@ -23,9 +23,10 @@ testHistoryController.create = async (req, res) => {
     }
 };
 
-testHistoryController.getAll = async (req, res) => {
+testHistoryController.getAllByUserId = async (req, res) => {
     try {
-        const histories = await TestHistory.find();
+        const { userId } = req.params;
+        const histories = await TestHistory.find({ userId });
         sendResponse(res, 200, {
             success: true,
             message: "Test history fetched successfully",
