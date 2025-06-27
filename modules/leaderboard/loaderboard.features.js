@@ -97,22 +97,41 @@ leaderboardFeatures.getUserRank = async (req, res) => {
                 $match: { status: "Correct" }
             },
             {
+                $addFields: {
+                    attemptNum: { $toInt: "$attempt" },
+                    timeNum: { $toDouble: "$time" }
+                }
+            },
+            {
                 $group: {
                     _id: "$userId",
                     totalScore: {
                         $sum: {
                             $cond: [
-                                { $eq: ["$attempt", "1"] },
+                                { $eq: ["$attemptNum", 1] },
                                 2,
                                 {
                                     $cond: [
-                                        { $eq: ["$attempt", "2"] },
+                                        { $eq: ["$attemptNum", 2] },
                                         1,
                                         0
                                     ]
                                 }
                             ]
                         }
+                    },
+                    totalTime: { $sum: "$timeNum" },
+                    totalQuestions: { $sum: 1 }
+                }
+            },
+            {
+                $addFields: {
+                    averageTime: {
+                        $cond: [
+                            { $eq: ["$totalQuestions", 0] },
+                            0,
+                            { $divide: ["$totalTime", "$totalQuestions"] }
+                        ]
                     }
                 }
             },
@@ -130,7 +149,7 @@ leaderboardFeatures.getUserRank = async (req, res) => {
             });
         }
 
-        const userScore = leaderboard[userRankIndex].totalScore;
+        const user = leaderboard[userRankIndex];
 
         sendResponse(res, 200, {
             success: true,
@@ -138,7 +157,8 @@ leaderboardFeatures.getUserRank = async (req, res) => {
             data: {
                 userId,
                 rank: userRankIndex + 1,
-                totalScore: userScore
+                totalScore: user.totalScore,
+                averageTime: Math.round(user.averageTime * 100) / 100 // rounded to 2 decimal places
             }
         });
     } catch (err) {
@@ -149,5 +169,6 @@ leaderboardFeatures.getUserRank = async (req, res) => {
         });
     }
 };
+
 
 module.exports = leaderboardFeatures;
