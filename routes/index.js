@@ -12,6 +12,7 @@ const courseMatrialRouter = require("../modules/courseMatrials/courseMatrials.ro
 const mockRouter = require("../modules/mock/mock.route");
 const mockQuestionRouter = require("../modules/mockQuestions/mockQuestions.route");
 const testHistoryRouter = require("../modules/testHistory/testHistory.route");
+const leaderboardRouter = require("../modules/leaderboard/leaderboard.route");
 
 const router = require("express").Router();
 
@@ -23,6 +24,7 @@ const routes = [
     { path: "/modules", router: moduleRouter },
     { path: "/tests", router: testRouter },
     { path: "/test-history", router: testHistoryRouter },
+    { path: "/leaderboard-test", router: leaderboardRouter },
     { path: "/mock", router: mockRouter },
     { path: "/mockquestions", router: mockQuestionRouter },
     { path: "/mcq", router: mcqRouter },
