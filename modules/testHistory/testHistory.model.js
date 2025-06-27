@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const testHistorySchema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Types.ObjectId,
+            require: true
+        },
         questionId: {
             type: mongoose.Types.ObjectId,
             required: true,
