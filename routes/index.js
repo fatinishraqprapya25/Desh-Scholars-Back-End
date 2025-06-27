@@ -11,6 +11,7 @@ const paymentRouter = require("../modules/payment/payment.route");
 const courseMatrialRouter = require("../modules/courseMatrials/courseMatrials.route");
 const mockRouter = require("../modules/mock/mock.route");
 const mockQuestionRouter = require("../modules/mockQuestions/mockQuestions.route");
+const testHistoryRouter = require("../modules/testHistory/testHistory.route");
 
 const router = require("express").Router();
 
@@ -21,6 +22,7 @@ const routes = [
     { path: "/courses", router: courseRouter },
     { path: "/modules", router: moduleRouter },
     { path: "/tests", router: testRouter },
+    { path: "/test-history", router: testHistoryRouter },
     { path: "/mock", router: mockRouter },
     { path: "/mockquestions", router: mockQuestionRouter },
     { path: "/mcq", router: mcqRouter },
