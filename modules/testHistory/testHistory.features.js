@@ -3,22 +3,46 @@ const sendResponse = require("../../utils/sendResponse");
 
 const testHistoryController = {};
 
+
 testHistoryController.create = async (req, res) => {
     try {
-        const { questionId, status } = req.body;
+        const { questionId, status, userId } = req.body;
 
-        const history = new TestHistory({ questionId, status, attempt });
-        await history.save();
+        const existing = await TestHistory.findOne({ questionId, userId });
 
-        sendResponse(res, 201, {
+        if (existing) {
+            if (existing.status === status || existing.status === "Correct") {
+                return sendResponse(res, 200, {
+                    success: true,
+                    message: "No update needed. Status is already the same.",
+                    data: existing,
+                });
+            }
+
+            existing.status = status;
+            existing.attempt = "2";
+            await existing.save();
+
+            return sendResponse(res, 200, {
+                success: true,
+                message: "Test history updated successfully",
+                data: existing,
+            });
+        }
+
+        const newHistory = new TestHistory({ questionId, status, userId });
+        await newHistory.save();
+
+        return sendResponse(res, 201, {
             success: true,
             message: "Test history created successfully",
-            data: history,
+            data: newHistory,
         });
     } catch (error) {
-        sendResponse(res, 500, {
+        console.error("Error creating/updating test history:", error);
+        return sendResponse(res, 500, {
             success: false,
-            message: "Failed to create test history",
+            message: "Server error while creating/updating test history",
         });
     }
 };

@@ -16,7 +16,7 @@ const testHistorySchema = new mongoose.Schema(
         },
         attempt: {
             type: String,
-            default: "0"
+            default: "1"
         }
     }
 );
