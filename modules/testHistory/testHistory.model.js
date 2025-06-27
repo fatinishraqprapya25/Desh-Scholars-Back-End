@@ -4,7 +4,7 @@ const testHistorySchema = new mongoose.Schema(
     {
         userId: {
             type: mongoose.Types.ObjectId,
-            require: true
+            required: true
         },
         questionId: {
             type: mongoose.Types.ObjectId,
