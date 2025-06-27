@@ -6,7 +6,7 @@ const testHistoryController = {};
 
 testHistoryController.create = async (req, res) => {
     try {
-        const { questionId, status, userId } = req.body;
+        const { questionId, status, userId, time } = req.body;
 
         const existing = await TestHistory.findOne({ questionId, userId });
 
@@ -30,7 +30,7 @@ testHistoryController.create = async (req, res) => {
             });
         }
 
-        const newHistory = new TestHistory({ questionId, status, userId });
+        const newHistory = new TestHistory({ questionId, status, userId, time });
         await newHistory.save();
 
         return sendResponse(res, 201, {
@@ -64,7 +64,6 @@ testHistoryController.getAllByUserId = async (req, res) => {
     }
 };
 
-// Get test history by ID
 testHistoryController.getById = async (req, res) => {
     try {
         const { id } = req.params;
