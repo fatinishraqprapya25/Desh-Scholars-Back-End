@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const teacherSchema = new mongoose.Schema(
+const testHistorySchema = new mongoose.Schema(
     {
         questionId: {
             type: mongoose.Types.ObjectId,
@@ -17,5 +17,5 @@ const teacherSchema = new mongoose.Schema(
     }
 );
 
-const Teacher = mongoose.model("Teacher", teacherSchema);
-module.exports = Teacher;
+const TestHistory = mongoose.model("TestHistory", testHistorySchema);
+module.exports = TestHistory;
