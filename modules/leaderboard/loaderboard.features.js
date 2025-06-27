@@ -10,22 +10,41 @@ leaderboardFeatures.getTestsLeaderBoard = async (req, res) => {
                 $match: { status: "Correct" }
             },
             {
+                $addFields: {
+                    attemptNum: { $toInt: "$attempt" },
+                    timeNum: { $toDouble: "$time" }
+                }
+            },
+            {
                 $group: {
                     _id: "$userId",
                     totalScore: {
                         $sum: {
                             $cond: [
-                                { $eq: ["$attempt", "1"] },
+                                { $eq: ["$attemptNum", 1] },
                                 2,
                                 {
                                     $cond: [
-                                        { $eq: ["$attempt", "2"] },
+                                        { $eq: ["$attemptNum", 2] },
                                         1,
                                         0
                                     ]
                                 }
                             ]
                         }
+                    },
+                    totalTime: { $sum: "$timeNum" },
+                    totalQuestions: { $sum: 1 }
+                }
+            },
+            {
+                $addFields: {
+                    averageTime: {
+                        $cond: [
+                            { $eq: ["$totalQuestions", 0] },
+                            0,
+                            { $divide: ["$totalTime", "$totalQuestions"] }
+                        ]
                     }
                 }
             },
@@ -46,7 +65,8 @@ leaderboardFeatures.getTestsLeaderBoard = async (req, res) => {
                     userId: "$_id",
                     name: "$user.name",
                     email: "$user.email",
-                    totalScore: 1
+                    totalScore: 1,
+                    averageTime: { $round: ["$averageTime", 2] } // Rounded to 2 decimal places
                 }
             },
             {
