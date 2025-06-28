@@ -6,29 +6,56 @@ const reviews = {};
 reviews.createReview = async (req, res) => {
     try {
         const { questionId, userId } = req.body;
+
         if (!questionId || !userId) {
-            return sendResponse(res, 400, false, "questionId is required.");
+            return sendResponse(res, 400, {
+                success: false,
+                message: "question id and user id is required!"
+            });
         }
 
-        const review = await Review.create({
-            questionId,
-            userId
+        const existingReview = await Review.findOne({ questionId, userId });
+
+        if (existingReview) {
+            return sendResponse(res, 400, {
+                success: false,
+                message: "Review already exists for this user and question."
+            });
+        }
+
+        const review = await Review.create({ questionId, userId });
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "review created successfully!",
+            data: review
         });
 
-        return sendResponse(res, 201, true, 'Review created successfully', review);
-
     } catch (error) {
-        return sendResponse(res, 500, false, 'Server error while creating review', null, error.message);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while creating review",
+            error: error.message
+        });
     }
 };
 
 reviews.getAllReviews = async (req, res) => {
     try {
         const allReviews = await Review.find().sort({ createdAt: -1 });
-        return sendResponse(res, 200, true, 'Reviews fetched successfully', allReviews);
+
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Reviews fetched successfully",
+            data: allReviews
+        });
+
     } catch (error) {
-        console.error('Error fetching reviews:', error);
-        return sendResponse(res, 500, false, 'Server error while fetching reviews', null, error.message);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while fetching reviews",
+            error: error.message
+        });
     }
 };
 
@@ -38,13 +65,24 @@ reviews.getReviewById = async (req, res) => {
         const review = await Review.findById(id);
 
         if (!review) {
-            return sendResponse(res, 404, false, 'Review not found');
+            return sendResponse(res, 404, {
+                success: false,
+                message: "Review not found"
+            });
         }
 
-        return sendResponse(res, 200, true, 'Review fetched successfully', review);
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Review fetched successfully",
+            data: review
+        });
+
     } catch (error) {
-        console.error('Error fetching review by ID:', error);
-        return sendResponse(res, 500, false, 'Server error while fetching review', null, error.message);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while fetching review",
+            error: error.message
+        });
     }
 };
 
@@ -53,27 +91,38 @@ reviews.updateReview = async (req, res) => {
         const { id } = req.params;
         const { questionId } = req.body;
 
-        const updatedFields = {};
-        if (questionId) {
-            updatedFields.questionId = questionId;
-        } else {
-            return sendResponse(res, 400, false, "No updatable fields provided (e.g., questionId).");
+        if (!questionId) {
+            return sendResponse(res, 400, {
+                success: false,
+                message: "No updatable fields provided (e.g., questionId)."
+            });
         }
 
-
-        const updatedReview = await Review.findByIdAndUpdate(id, updatedFields, {
-            new: true,
-            runValidators: true,
-        });
+        const updatedReview = await Review.findByIdAndUpdate(
+            id,
+            { questionId },
+            { new: true, runValidators: true }
+        );
 
         if (!updatedReview) {
-            return sendResponse(res, 404, false, 'Review not found');
+            return sendResponse(res, 404, {
+                success: false,
+                message: "Review not found"
+            });
         }
 
-        return sendResponse(res, 200, true, 'Review updated successfully', updatedReview);
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Review updated successfully",
+            data: updatedReview
+        });
+
     } catch (error) {
-        console.error('Error updating review:', error);
-        return sendResponse(res, 500, false, 'Server error while updating review', null, error.message);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while updating review",
+            error: error.message
+        });
     }
 };
 
@@ -83,13 +132,23 @@ reviews.deleteReview = async (req, res) => {
         const deleted = await Review.findByIdAndDelete(id);
 
         if (!deleted) {
-            return sendResponse(res, 404, false, 'Review not found');
+            return sendResponse(res, 404, {
+                success: false,
+                message: "Review not found"
+            });
         }
 
-        return sendResponse(res, 200, true, 'Review deleted successfully');
+        return sendResponse(res, 200, {
+            success: true,
+            message: "Review deleted successfully"
+        });
+
     } catch (error) {
-        console.error('Error deleting review:', error);
-        return sendResponse(res, 500, false, 'Server error while deleting review', null, error.message);
+        return sendResponse(res, 500, {
+            success: false,
+            message: "Server error while deleting review",
+            error: error.message
+        });
     }
 };
 
