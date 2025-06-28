@@ -5,6 +5,9 @@ const reviewSchema = new mongoose.Schema(
         questionId: {
             type: mongoose.Types.ObjectId,
             required: true
+        },
+        userId: {
+            type: mongoose.Types.ObjectId
         }
     },
     {

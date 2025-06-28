@@ -5,13 +5,14 @@ const reviews = {};
 
 reviews.createReview = async (req, res) => {
     try {
-        const { questionId } = req.body;
-        if (!questionId) {
+        const { questionId, userId } = req.body;
+        if (!questionId || !userId) {
             return sendResponse(res, 400, false, "questionId is required.");
         }
 
         const review = await Review.create({
             questionId,
+            userId
         });
 
         return sendResponse(res, 201, true, 'Review created successfully', review);
@@ -61,7 +62,7 @@ reviews.updateReview = async (req, res) => {
 
 
         const updatedReview = await Review.findByIdAndUpdate(id, updatedFields, {
-            new: true, 
+            new: true,
             runValidators: true,
         });
 
