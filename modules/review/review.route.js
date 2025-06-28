@@ -3,7 +3,6 @@ const reviewFeatures = require("./review.features");
 
 reviewRouter.post("/", reviewFeatures.createReview);
 reviewRouter.get("/", reviewFeatures.getAllReviews);
-reviewRouter.get("/:d", reviewFeatures.getReviewById);
-reviewRouter.put("/:d", reviewFeatures.updateReview);
+reviewRouter.post("/user", reviewFeatures.getReviewById);
 
 module.exports = reviewRouter;

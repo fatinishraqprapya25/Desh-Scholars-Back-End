@@ -5,25 +5,20 @@ const reviews = {};
 
 reviews.createReview = async (req, res) => {
     try {
-        const { questionId, userId } = req.body;
-
-        if (!questionId || !userId) {
-            return sendResponse(res, 400, {
-                success: false,
-                message: "question id and user id is required!"
-            });
-        }
+        const { questionId, userId, subject } = req.body;
 
         const existingReview = await Review.findOne({ questionId, userId });
 
         if (existingReview) {
+            const deleted = await Review.findOneAndDelete({ userId, questionId });
+
             return sendResponse(res, 400, {
                 success: false,
-                message: "Review already exists for this user and question."
+                message: "Review Deleted"
             });
         }
 
-        const review = await Review.create({ questionId, userId });
+        const review = await Review.create({ questionId, userId, subject });
 
         return sendResponse(res, 200, {
             success: true,
@@ -60,9 +55,10 @@ reviews.getAllReviews = async (req, res) => {
 };
 
 reviews.getReviewById = async (req, res) => {
+    console.log("hi", req.body);
     try {
-        const { id } = req.params;
-        const review = await Review.findById(id);
+        const { questionId, userId } = req.body;
+        const review = await Review.findOne({ questionId, userId });
 
         if (!review) {
             return sendResponse(res, 404, {
@@ -128,8 +124,8 @@ reviews.updateReview = async (req, res) => {
 
 reviews.deleteReview = async (req, res) => {
     try {
-        const { id } = req.params;
-        const deleted = await Review.findByIdAndDelete(id);
+        const { userId, questionId } = req.params;
+        const deleted = await Review.findOneAndDelete({ userId, questionId });
 
         if (!deleted) {
             return sendResponse(res, 404, {
